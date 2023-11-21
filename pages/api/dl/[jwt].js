@@ -32,7 +32,7 @@ export default async function handler(req, res) {
     quality: 'best', 
     type: type === "video" ? "video+audio" : type,
     format 
-  }).catch(() => null)
+  }).catch((e) => { console.log(e); return null })
 
   if (!stream) return res.status(500).json({ message: 'Failed to download' })
 
