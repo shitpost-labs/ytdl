@@ -9,7 +9,6 @@ export default async function handler(req, res) {
 
   if (!jwt) return res.status(400).json({ message: 'No JWT provided' })
 
-  // verify the JWT
   let vidId;
   let format;
   let type;
@@ -29,10 +28,11 @@ export default async function handler(req, res) {
     return res.status(400).json({ message: 'Invalid JWT' })
   }
 
-
-  console.log(vidId, format, type)
-
-  const stream = await youtube.download(vidId, { quality: 'best', type, format }).catch(() => null)
+  const stream = await youtube.download(vidId, { 
+    quality: 'best', 
+    type: type === "video" ? "video+audio" : type,
+    format 
+  }).catch(() => null)
 
   if (!stream) return res.status(500).json({ message: 'Failed to download' })
 

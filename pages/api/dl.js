@@ -37,7 +37,16 @@ export default async function handler(req, res) {
 
   if (!format || !['video', 'audio'].includes(format)) return res.status(400).json({ message: 'Invalid format' })
 
-  const jwt = sign({ vidId, title: video.basic_info.title, format, type: format === 'audio' ? 'mp3' : 'mp4' }, process.env.JWT_SECRET, { expiresIn: '60s' })
+  const jwt = sign(
+    { 
+      vidId,
+      title: video.basic_info.title,
+      format: format === 'audio' ? 'mp3' : 'mp4',
+      type: format
+    }, 
+    process.env.JWT_SECRET, 
+    { expiresIn: '60s' }
+  )
 
   res.status(200).json(jwt)
 }
