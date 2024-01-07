@@ -21,6 +21,8 @@ export default async function handler(req, res) {
 
   const requestId = req.headers['x-request-id']
 
+  if (!requestId) return res.status(400).json({ message: 'No request ID provided' })
+
   try {
     const timestamp = parseInt(requestId, 36)
     if (new Date().getTime() - timestamp > 30000) return res.status(400).json({ message: 'Invalid request ID' })
@@ -46,7 +48,7 @@ export default async function handler(req, res) {
       format: format === 'audio' ? 'mp3' : 'mp4',
       type: format
     }, 
-    process.env.JWT_SECRET, 
+    process.env.JWT_SECRET || 'default_secret', 
     { expiresIn: '60s' }
   )
 

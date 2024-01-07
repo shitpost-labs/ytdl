@@ -72,13 +72,7 @@ export default function Home({ prefill }) {
 
     setSubmitting(false)
 
-    const form = document.createElement('form')
-    form.setAttribute('method', 'post')
-    form.setAttribute('action', `/api/dl/${data.replace(/"/g, '')}`)
-    form.setAttribute('target', '_blank')
-    document.body.appendChild(form)
-    form.submit()
-    form.remove()
+    window.location.href = `/api/dl/${data.replace(/"/g, '')}?h=${new Date().getTime().toString(36)}`
   }
 
   return (

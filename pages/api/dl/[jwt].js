@@ -3,11 +3,21 @@ const youtube = await Innertube.create(/* options */);
 import { verify } from "jsonwebtoken";
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).json({ message: 'Method not allowed' })
+  if (req.method !== 'GET') return res.status(405).json({ message: 'Method not allowed' })
 
-  const { jwt } = req.query
+  const { jwt, h } = req.query
 
   if (!jwt) return res.status(400).json({ message: 'No JWT provided' })
+
+  if (!h) return res.status(400).json({ message: 'No request ID provided' })
+
+  try {
+    const timestamp = parseInt(h, 36)
+    if (new Date().getTime() - timestamp > 30000) return res.status(400).json({ message: 'Invalid request ID' })
+  }
+  catch (e) {
+    return res.status(400).json({ message: 'Invalid request ID' })
+  }
 
   let vidId;
   let format;
@@ -15,7 +25,7 @@ export default async function handler(req, res) {
   let title;
   
   try {
-    const decoded = verify(jwt, process.env.JWT_SECRET)
+    const decoded = verify(jwt, process.env.JWT_SECRET || 'default_secret')
     if (!decoded) return res.status(400).json({ message: 'Invalid JWT' })
     if (decoded.exp < Date.now() / 1000) return res.status(400).json({ message: 'Expired JWT' })
 
