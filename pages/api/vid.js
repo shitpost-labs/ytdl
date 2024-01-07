@@ -29,10 +29,11 @@ export default async function handler(req, res) {
     
     console.log(`Embedding video ${vidId}`)
     for await (const chunk of stream) {
-      await res.write(chunk)
+      res.write(chunk)
     }
 
     res.end()
+    console.log(`Finished embedding video ${vidId}`)
   }
   catch (e) {
     console.log(e)
