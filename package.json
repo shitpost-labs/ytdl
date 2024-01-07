@@ -16,6 +16,7 @@
     "next": "14.0.3",
     "react": "^18",
     "react-dom": "^18",
+    "streaming-cache": "^0.5.5",
     "youtubei.js": "^7.0.0"
   },
   "devDependencies": {
