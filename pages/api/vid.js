@@ -1,6 +1,18 @@
 import { Innertube } from 'youtubei.js';
 const youtube = await Innertube.create(/* options */);
 
+const checkDiscord = (req) => {
+  const ip = req.headers['cf-connecting-ip'] || req.headers['x-forwarded-for'] || req.connection.remoteAddress
+  const ua = req.headers['user-agent']
+
+  if (!ip) return false
+  if (!ua) return false
+
+  if (ip.startsWith('104.') || ip.startsWith('34.') || ip.startsWith('35.')) return true
+  if (ua.toLowerCase().includes('discordbot')) return true
+
+  return false
+}
 export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ message: 'Method not allowed' })
 
@@ -8,8 +20,7 @@ export default async function handler(req, res) {
 
   if (!id) return res.status(400).json({ message: 'No id provided' })
 
-  console.log(`[${new Date().toLocaleString()}] ${req.headers['user-agent']} requested ${id} from IP ${req.headers['cf-connecting-ip'] || req.headers['x-forwarded-for'] || req.connection.remoteAddress}`)
-  if (!req.headers['user-agent'].toLowerCase().includes('discordbot')) return res.status(302).redirect(`https://www.youtube.com/watch?v=${id}&ref=ytdl-embed`)
+  if (!checkDiscord(req)) return res.status(302).redirect(`https://youtube.com/watch?v=${id}`)
 
   const vidId = id
     .replace(/^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)/, '')
