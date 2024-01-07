@@ -8,6 +8,7 @@ export default async function handler(req, res) {
 
   if (!id) return res.status(400).json({ message: 'No id provided' })
 
+  console.log(`[${new Date().toLocaleString()}] ${req.headers['user-agent']} requested ${id} from IP ${req.headers['cf-connecting-ip'] || req.headers['x-forwarded-for'] || req.connection.remoteAddress}`)
   if (!req.headers['user-agent'].toLowerCase().includes('discordbot')) return res.status(302).redirect(`https://www.youtube.com/watch?v=${id}&ref=ytdl-embed`)
 
   const vidId = id
@@ -29,11 +30,10 @@ export default async function handler(req, res) {
     
     console.log(`Embedding video ${vidId}`)
     for await (const chunk of stream) {
-      res.write(chunk)
+      await res.write(chunk)
     }
 
     res.end()
-    console.log(`Finished embedding video ${vidId}`)
   }
   catch (e) {
     console.log(e)
