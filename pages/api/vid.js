@@ -24,7 +24,7 @@ export default async function handler(req, res) {
     if (!stream) return res.status(500).json({ message: 'Failed to download' })
 
     res.setHeader('Content-Type', `video/mp4`)
-    res.setHeader('Content-Disposition', `inline; filename="vid.mp4"`)
+    res.setHeader('Content-Disposition', `filename="vid.mp4"`)
     res.setHeader('Cache-Control', 'no-cache')
     
     console.log(`Embedding video ${vidId}`)
